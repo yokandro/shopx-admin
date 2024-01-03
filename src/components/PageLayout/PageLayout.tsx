@@ -1,19 +1,24 @@
-import { Layout } from "antd";
+import { Card, Layout } from "antd";
 import type { FC, PropsWithChildren } from "react";
 
-import { StyledContent, StyledPageLayout } from "./PageLayout.styles";
+import { Header } from "./components/Header";
+import { Sidebar } from "./components/Sidebar";
 
-const { Header, Sider } = Layout;
+const { Sider, Content } = Layout;
 
 const PageLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <StyledPageLayout>
+    <Layout className="h-full">
       <Header />
       <Layout hasSider>
-        <Sider />
-        <StyledContent>{children}</StyledContent>
+        <Sider>
+          <Sidebar />
+        </Sider>
+        <Content className="p-6">
+          <Card className="h-full">{children}</Card>
+        </Content>
       </Layout>
-    </StyledPageLayout>
+    </Layout>
   );
 };
 

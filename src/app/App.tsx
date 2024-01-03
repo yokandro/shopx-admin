@@ -1,11 +1,12 @@
-import { Route, Routes } from "react-router-dom";
+import { Spin } from "antd";
+import { Navigate, Route, Routes } from "react-router-dom";
 
-import { Login } from "src/pages/Auth/Login";
-import { Home } from "src/pages/Home";
 import { useInitViewer } from "src/common/hooks/useInitViewer/useInitViewer";
+import { NotFoundPage } from "src/pages/NotFoundPage";
+import { PageLayout } from "src/components/PageLayout";
 
 import { RoutesMap } from "./routes-map";
-import { Spin } from "antd";
+import { ROUTES } from "./constants";
 
 function App() {
   const { isViewerLoading } = useInitViewer();
@@ -14,8 +15,15 @@ function App() {
     <>
       <Spin fullscreen spinning={isViewerLoading} />
       <Routes>
-        <Route path={RoutesMap.Login} element={<Login />} />
-        <Route path={RoutesMap.Home} element={<Home />} />
+        <Route path="/" element={<Navigate to={RoutesMap.Products} />} />
+        {ROUTES.map(({ path, element, skipLayout }) => (
+          <Route
+            key={path}
+            path={path}
+            element={skipLayout ? element : <PageLayout>{element}</PageLayout>}
+          />
+        ))}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

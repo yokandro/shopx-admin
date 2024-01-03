@@ -15,7 +15,7 @@ export const useAuth = () => {
       localStorageOperations.setRefreshTokenExpiry(
         login.refreshTokenExpiry || ""
       );
-      navigate(RoutesMap.Home);
+      navigate(RoutesMap.Products);
     },
     onError: (error) => message.error(error.message),
   });
