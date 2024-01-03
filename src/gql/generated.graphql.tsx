@@ -51,12 +51,7 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getAccountById: Account;
-};
-
-
-export type QueryGetAccountByIdArgs = {
-  id: Scalars['String']['input'];
+  getCurrentAccount: Account;
 };
 
 export type TokensModel = {
@@ -185,7 +180,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getAccountById?: Resolver<ResolversTypes['Account'], ParentType, ContextType, RequireFields<QueryGetAccountByIdArgs, 'id'>>;
+  getCurrentAccount?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
 }>;
 
 export type TokensModelResolvers<ContextType = any, ParentType extends ResolversParentTypes['TokensModel'] = ResolversParentTypes['TokensModel']> = ResolversObject<{
@@ -209,6 +204,11 @@ export type Resolvers<ContextType = any> = ResolversObject<{
 }>;
 
 
+export type GetCurrentAccountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentAccountQuery = { __typename?: 'Query', getCurrentAccount: { __typename?: 'Account', _id: string, firstName: string, lastName: string, email: string } };
+
 export type LoginMutationVariables = Exact<{
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -218,6 +218,48 @@ export type LoginMutationVariables = Exact<{
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'TokensModel', accessToken: string, refreshToken: string, refreshTokenExpiry?: string | null } };
 
 
+export const GetCurrentAccountDocument = gql`
+    query getCurrentAccount {
+  getCurrentAccount {
+    _id
+    firstName
+    lastName
+    email
+  }
+}
+    `;
+
+/**
+ * __useGetCurrentAccountQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentAccountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCurrentAccountQuery(baseOptions?: Apollo.QueryHookOptions<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>(GetCurrentAccountDocument, options);
+      }
+export function useGetCurrentAccountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>(GetCurrentAccountDocument, options);
+        }
+export function useGetCurrentAccountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>(GetCurrentAccountDocument, options);
+        }
+export type GetCurrentAccountQueryHookResult = ReturnType<typeof useGetCurrentAccountQuery>;
+export type GetCurrentAccountLazyQueryHookResult = ReturnType<typeof useGetCurrentAccountLazyQuery>;
+export type GetCurrentAccountSuspenseQueryHookResult = ReturnType<typeof useGetCurrentAccountSuspenseQuery>;
+export type GetCurrentAccountQueryResult = Apollo.QueryResult<GetCurrentAccountQuery, GetCurrentAccountQueryVariables>;
 export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {

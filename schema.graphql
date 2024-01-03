@@ -29,7 +29,7 @@ type Mutation {
 }
 
 type Query {
-  getAccountById(id: String!): Account!
+  getCurrentAccount: Account!
 }
 
 type TokensModel {

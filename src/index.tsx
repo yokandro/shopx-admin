@@ -6,6 +6,8 @@ import { ApolloProvider } from "@apollo/client";
 import App from "./app/App";
 import client from "./gql/client";
 import reportWebVitals from "./reportWebVitals";
+import "./index.css";
+import { ViewerProvider } from "./common/contexts/ViewerContext/ViewerContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,7 +16,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ApolloProvider client={client}>
-        <App />
+        <ViewerProvider>
+          <App />
+        </ViewerProvider>
       </ApolloProvider>
     </BrowserRouter>
   </React.StrictMode>
