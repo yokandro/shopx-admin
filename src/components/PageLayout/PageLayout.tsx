@@ -15,7 +15,7 @@ const PageLayout: FC<PropsWithChildren> = ({ children }) => {
           <Sidebar />
         </Sider>
         <Content className="p-6">
-          <Card className="h-full">{children}</Card>
+          <Card className="h-full [&>.ant-card-body]:h-full">{children}</Card>
         </Content>
       </Layout>
     </Layout>
