@@ -24,7 +24,7 @@ const Categories = () => {
       <div className="flex items-center justify-between mb-4">
         <Typography.Title level={4}>Categories</Typography.Title>
         <div className="flex">
-          <Input
+          <Input.Search
             className="mr-2 min-w-[300px]"
             placeholder="Search category"
             onChange={(e) => setSearchTerm(e.target.value)}

@@ -57,7 +57,6 @@ export type Category = {
   deletedBy?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   parentCategoryId?: Maybe<Scalars['ObjectId']['output']>;
-  parentCategoryPath?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
   updatedBy?: Maybe<Scalars['String']['output']>;
 };
@@ -67,13 +66,25 @@ export type CreateCategoryInput = {
   parentCategoryId?: InputMaybe<Scalars['ObjectId']['input']>;
 };
 
+export type CreateProductInput = {
+  categoryId: Scalars['ObjectId']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+};
+
 export type GetCategoryFilterInput = {
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GetProductsFilterInput = {
   searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createCategory: Category;
+  createProduct: Product;
   login: TokensModel;
   refreshTokens: TokensModel;
 };
@@ -81,6 +92,11 @@ export type Mutation = {
 
 export type MutationCreateCategoryArgs = {
   input: CreateCategoryInput;
+};
+
+
+export type MutationCreateProductArgs = {
+  input: CreateProductInput;
 };
 
 
@@ -94,15 +110,48 @@ export type PaginationInput = {
   skip?: Scalars['Float']['input'];
 };
 
+export type Product = {
+  __typename?: 'Product';
+  _id: Scalars['String']['output'];
+  categoryId: Scalars['ObjectId']['output'];
+  categoryName: Scalars['String']['output'];
+  code: Scalars['Float']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  createdBy?: Maybe<Scalars['String']['output']>;
+  deleted: Scalars['Boolean']['output'];
+  deletedAt?: Maybe<Scalars['DateTime']['output']>;
+  deletedBy?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  rating?: Maybe<Scalars['Float']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  updatedBy?: Maybe<Scalars['String']['output']>;
+};
+
+export type ProductsOutput = {
+  __typename?: 'ProductsOutput';
+  collection: Array<Product>;
+  totalCount: Scalars['Float']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getCategories: CategoriesPayload;
   getCurrentAccount: Account;
+  getProducts: ProductsOutput;
 };
 
 
 export type QueryGetCategoriesArgs = {
   filter?: InputMaybe<GetCategoryFilterInput>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<SortInput>;
+};
+
+
+export type QueryGetProductsArgs = {
+  filter?: InputMaybe<GetProductsFilterInput>;
   pagination?: InputMaybe<PaginationInput>;
   sort?: InputMaybe<SortInput>;
 };
@@ -196,12 +245,16 @@ export type ResolversTypes = ResolversObject<{
   CategoriesPayload: ResolverTypeWrapper<CategoriesPayload>;
   Category: ResolverTypeWrapper<Category>;
   CreateCategoryInput: CreateCategoryInput;
+  CreateProductInput: CreateProductInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   GetCategoryFilterInput: GetCategoryFilterInput;
+  GetProductsFilterInput: GetProductsFilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']['output']>;
   PaginationInput: PaginationInput;
+  Product: ResolverTypeWrapper<Product>;
+  ProductsOutput: ResolverTypeWrapper<ProductsOutput>;
   Query: ResolverTypeWrapper<{}>;
   SortInput: SortInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -216,12 +269,16 @@ export type ResolversParentTypes = ResolversObject<{
   CategoriesPayload: CategoriesPayload;
   Category: Category;
   CreateCategoryInput: CreateCategoryInput;
+  CreateProductInput: CreateProductInput;
   DateTime: Scalars['DateTime']['output'];
   Float: Scalars['Float']['output'];
   GetCategoryFilterInput: GetCategoryFilterInput;
+  GetProductsFilterInput: GetProductsFilterInput;
   Mutation: {};
   ObjectId: Scalars['ObjectId']['output'];
   PaginationInput: PaginationInput;
+  Product: Product;
+  ProductsOutput: ProductsOutput;
   Query: {};
   SortInput: SortInput;
   String: Scalars['String']['output'];
@@ -261,7 +318,6 @@ export type CategoryResolvers<ContextType = any, ParentType extends ResolversPar
   deletedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   parentCategoryId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  parentCategoryPath?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   updatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -273,6 +329,7 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
+  createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'input'>>;
   login?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   refreshTokens?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType>;
 }>;
@@ -281,9 +338,35 @@ export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'ObjectId';
 }
 
+export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
+  _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  categoryId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  categoryName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  deletedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  deletedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  rating?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  updatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProductsOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProductsOutput'] = ResolversParentTypes['ProductsOutput']> = ResolversObject<{
+  collection?: Resolver<Array<ResolversTypes['Product']>, ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getCategories?: Resolver<ResolversTypes['CategoriesPayload'], ParentType, ContextType, Partial<QueryGetCategoriesArgs>>;
   getCurrentAccount?: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
+  getProducts?: Resolver<ResolversTypes['ProductsOutput'], ParentType, ContextType, Partial<QueryGetProductsArgs>>;
 }>;
 
 export type TokensModelResolvers<ContextType = any, ParentType extends ResolversParentTypes['TokensModel'] = ResolversParentTypes['TokensModel']> = ResolversObject<{
@@ -304,6 +387,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   ObjectId?: GraphQLScalarType;
+  Product?: ProductResolvers<ContextType>;
+  ProductsOutput?: ProductsOutputResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   TokensModel?: TokensModelResolvers<ContextType>;
   Upload?: GraphQLScalarType;
@@ -323,14 +408,14 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'TokensModel', accessToken: string, refreshToken: string, refreshTokenExpiry?: string | null } };
 
-export type CategoryFragment = { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, parentCategoryPath?: string | null };
+export type CategoryFragment = { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, parentCategoryPath?: string | null } };
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any } };
 
 export type GetCategoriesQueryVariables = Exact<{
   sort?: InputMaybe<SortInput>;
@@ -339,7 +424,25 @@ export type GetCategoriesQueryVariables = Exact<{
 }>;
 
 
-export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, parentCategoryPath?: string | null }> } };
+export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any }> } };
+
+export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string };
+
+export type CreateProductMutationVariables = Exact<{
+  input: CreateProductInput;
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string } };
+
+export type GetProductsQueryVariables = Exact<{
+  filter?: InputMaybe<GetProductsFilterInput>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<SortInput>;
+}>;
+
+
+export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string }> } };
 
 export const CategoryFragmentDoc = gql`
     fragment Category on Category {
@@ -348,7 +451,18 @@ export const CategoryFragmentDoc = gql`
   parentCategoryId
   createdAt
   updatedAt
-  parentCategoryPath
+}
+    `;
+export const ProductFragmentDoc = gql`
+    fragment Product on Product {
+  _id
+  name
+  description
+  createdAt
+  price
+  code
+  categoryId
+  categoryName
 }
     `;
 export const GetCurrentAccountDocument = gql`
@@ -507,3 +621,81 @@ export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQue
 export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
 export type GetCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetCategoriesSuspenseQuery>;
 export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const CreateProductDocument = gql`
+    mutation createProduct($input: CreateProductInput!) {
+  createProduct(input: $input) {
+    ...Product
+  }
+}
+    ${ProductFragmentDoc}`;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const GetProductsDocument = gql`
+    query getProducts($filter: GetProductsFilterInput, $pagination: PaginationInput, $sort: SortInput) {
+  getProducts(filter: $filter, pagination: $pagination, sort: $sort) {
+    collection {
+      ...Product
+    }
+    totalCount
+  }
+}
+    ${ProductFragmentDoc}`;
+
+/**
+ * __useGetProductsQuery__
+ *
+ * To run a query within a React component, call `useGetProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      pagination: // value for 'pagination'
+ *      sort: // value for 'sort'
+ *   },
+ * });
+ */
+export function useGetProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
+      }
+export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
+        }
+export function useGetProductsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
+        }
+export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
+export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
+export type GetProductsSuspenseQueryHookResult = ReturnType<typeof useGetProductsSuspenseQuery>;
+export type GetProductsQueryResult = Apollo.QueryResult<GetProductsQuery, GetProductsQueryVariables>;
