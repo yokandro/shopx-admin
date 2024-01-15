@@ -13,6 +13,6 @@ export const CATEGORY_TABLE_COLUMNS: { title: string; key: string }[] = [
   },
   {
     title: "Parent category",
-    key: "parentCategoryId",
+    key: "categoryName",
   },
 ];

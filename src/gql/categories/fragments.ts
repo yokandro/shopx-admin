@@ -7,5 +7,6 @@ export const CategoryFragment = gql`
     parentCategoryId
     createdAt
     updatedAt
+    categoryName
   }
 `;

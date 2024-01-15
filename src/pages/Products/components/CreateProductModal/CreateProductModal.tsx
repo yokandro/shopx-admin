@@ -51,21 +51,21 @@ const CreateProductModal = () => {
       onCancel={closeModal}
       onOk={form.submit}
     >
-      <Form form={form} onFinish={onFinish}>
-        <Form.Item name="name">
+      <Form form={form} onFinish={onFinish} layout="vertical">
+        <Form.Item name="name" label="Name">
           <Input placeholder="Enter name" />
         </Form.Item>
-        <Form.Item name="description">
+        <Form.Item name="description" label="Description">
           <Input.TextArea placeholder="Enter description" />
         </Form.Item>
-        <Form.Item name="categoryId">
+        <Form.Item name="categoryId" label="Category">
           <TreeSelect
             placeholder="Select category"
             loading={loading}
             treeData={categoriesOptions}
           />
         </Form.Item>
-        <Form.Item name="price">
+        <Form.Item name="price" label="Price">
           <Input type="number" placeholder="Enter price" />
         </Form.Item>
       </Form>

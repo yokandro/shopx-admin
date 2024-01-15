@@ -55,14 +55,15 @@ const CreateCategoryModal = () => {
       onOk={form.submit}
       onCancel={closeModal}
     >
-      <Form onFinish={onFinish} form={form}>
-        <Form.Item name="parentCategoryId">
+      <Form onFinish={onFinish} form={form} layout="vertical">
+        <Form.Item name="parentCategoryId" label="Category">
           <TreeSelect
             placeholder="Select category"
             treeData={categoriesOptions}
           />
         </Form.Item>
         <Form.Item
+          label="Name"
           name="name"
           rules={[{ required: true, message: "Name is required" }]}
         >

@@ -27,7 +27,7 @@ const Header = () => {
         dropdownRender={() => (
           <div style={contentStyle} className="p-4">
             <Typography className="mb-2 font-semibold">
-              {user?.email}
+              {user?.account?.email}
             </Typography>
             <Button danger type="primary" className="w-full" onClick={logout}>
               Log out

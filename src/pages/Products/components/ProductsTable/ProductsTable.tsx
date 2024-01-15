@@ -61,9 +61,10 @@ const ProductsTable = () => {
       render: (value: string) => moment(value).format("DD/MM/YYYY"),
     },
   ];
-
+  console.log(products);
   return (
     <Table
+      rowKey={(record) => record._id}
       dataSource={products as Product[]}
       columns={columns}
       pagination={{

@@ -42,6 +42,7 @@ const CategoriesTable = () => {
       key,
       dataIndex: key,
       sorter: (a, b, sortOrder) => handleSort(key, sortOrder),
+      render: (value: string) => value || "-",
     })
   );
 
