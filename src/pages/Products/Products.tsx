@@ -11,8 +11,9 @@ import {
 } from "src/common/contexts/SearchContext/SearchContext";
 
 import { PRODUCT_MODALS } from "./constants";
-import { CreateProductModal } from "./components/CreateProductModal";
+import { UpsertProductModal } from "./components/UpsertProductModal";
 import { ProductsTable } from "./components/ProductsTable";
+import { DeleteProductModal } from "./components/DeleteProductModal";
 
 const Products = () => {
   const { setModal } = useContext(ModalContext);
@@ -20,7 +21,8 @@ const Products = () => {
 
   return (
     <div>
-      <CreateProductModal />
+      <UpsertProductModal />
+      <DeleteProductModal />
       <div className="flex items-center justify-between mb-4">
         <Typography.Title level={4}>Products</Typography.Title>
         <div className="flex items-center">
@@ -31,7 +33,7 @@ const Products = () => {
           />
           <Button
             type="primary"
-            onClick={() => setModal(PRODUCT_MODALS.CreateProduct)}
+            onClick={() => setModal(PRODUCT_MODALS.UpsertProduct, true)}
           >
             Create product
           </Button>

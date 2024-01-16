@@ -10,5 +10,6 @@ export const ProductFragment = gql`
     code
     categoryId
     categoryName
+    status
   }
 `;

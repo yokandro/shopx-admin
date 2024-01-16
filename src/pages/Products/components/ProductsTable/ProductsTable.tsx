@@ -6,7 +6,14 @@ import { useContext, useMemo } from "react";
 import { SearchContext } from "src/common/contexts/SearchContext/SearchContext";
 import { useTablePagination } from "src/common/hooks/useTablePagination/useTablePagination";
 import { useTableSort } from "src/common/hooks/useTableSort/useTableSort";
-import { Product, useGetProductsQuery } from "src/gql/generated.graphql";
+import {
+  Product,
+  ProductStatuses,
+  useGetProductsQuery,
+} from "src/gql/generated.graphql";
+
+import { ProductActions } from "./components/ProductActions";
+import { ProductStatusColumn } from "./components/ProductStatusColumn";
 
 const ProductsTable = () => {
   const { searchTerm } = useContext(SearchContext);
@@ -55,13 +62,25 @@ const ProductsTable = () => {
       sorter: (a, b, order) => handleSort("price", order),
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      render: (value: ProductStatuses, record: Product) => (
+        <ProductStatusColumn status={value} productId={record._id} />
+      ),
+      sorter: (a, b, order) => handleSort("status", order),
+    },
+    {
       title: "Created At",
       dataIndex: "createdAt",
       sorter: (a, b, order) => handleSort("createdAt", order),
       render: (value: string) => moment(value).format("DD/MM/YYYY"),
     },
+    {
+      title: "Actions",
+      render: (product: Product) => <ProductActions product={product} />,
+    },
   ];
-  console.log(products);
+
   return (
     <Table
       rowKey={(record) => record._id}

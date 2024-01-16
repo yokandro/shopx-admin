@@ -45,6 +45,11 @@ type Category {
   updatedBy: String
 }
 
+input ChangeProductStatusInput {
+  productId: ObjectId!
+  status: String!
+}
+
 input CreateCategoryInput {
   name: String!
   parentCategoryId: ObjectId
@@ -75,19 +80,24 @@ input GetCategoryFilterInput {
 
 input GetProductsFilterInput {
   searchTerm: String
+  statuses: [String!]
 }
 
 input GetUsersFilterInput {
+  roles: [String!]
   searchTerm: String
   statuses: [String!]
 }
 
 type Mutation {
+  changeProductStatus(input: ChangeProductStatusInput!): Product!
   createCategory(input: CreateCategoryInput!): Category!
   createProduct(input: CreateProductInput!): Product!
   createUser(input: CreateUserInput!): User!
+  deleteProductById(productId: ObjectId!): Boolean!
   login(email: String!, password: String!): TokensModel!
   refreshTokens: TokensModel!
+  updateProduct(input: UpdateProductInput!): Product!
 }
 
 """Mongo Object ID scalar type"""
@@ -112,6 +122,7 @@ type Product {
   name: String!
   price: Float!
   rating: Float
+  status: ProductStatuses!
   updatedAt: DateTime!
   updatedBy: String
 }
@@ -119,6 +130,12 @@ type Product {
 type ProductsOutput {
   collection: [Product!]!
   totalCount: Float!
+}
+
+enum ProductStatuses {
+  ARCHIVED
+  DRAFT
+  PUBLISHED
 }
 
 type Query {
@@ -142,6 +159,14 @@ type TokensModel {
   accessToken: String!
   refreshToken: String!
   refreshTokenExpiry: String
+}
+
+input UpdateProductInput {
+  categoryId: ObjectId!
+  description: String!
+  name: String!
+  price: Float!
+  productId: ObjectId!
 }
 
 type User {

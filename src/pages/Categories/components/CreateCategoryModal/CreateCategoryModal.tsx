@@ -30,7 +30,7 @@ const CreateCategoryModal = () => {
 
   const closeModal = () => {
     form.resetFields();
-    setModal(CategoryModals.CreateCategory);
+    setModal(CategoryModals.CreateCategory, false);
   };
 
   const onFinish = (values: any) => {

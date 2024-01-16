@@ -30,7 +30,7 @@ const Categories = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Button
-            onClick={() => setModal(CategoryModals.CreateCategory)}
+            onClick={() => setModal(CategoryModals.CreateCategory, true)}
             type="primary"
           >
             Create category

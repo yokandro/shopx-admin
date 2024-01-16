@@ -20,10 +20,10 @@ const ModalProvider: FC<PropsWithChildren> = ({ children }) => {
     Record<string, boolean>
   >({});
 
-  const setModal = (modalName: string) => {
+  const setModal = (modalName: string, status: boolean) => {
     setIsOpenedCurrent((prev) => ({
       ...prev,
-      [modalName]: !prev[modalName],
+      [modalName]: status,
     }));
   };
 

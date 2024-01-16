@@ -33,7 +33,7 @@ const Users = () => {
           />
           <UsersFilter className="mx-2" />
           <Button
-            onClick={() => setModal(UserModals.CreateUser)}
+            onClick={() => setModal(UserModals.CreateUser, true)}
             type="primary"
           >
             Create user

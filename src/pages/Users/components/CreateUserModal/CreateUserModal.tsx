@@ -19,7 +19,7 @@ const CreateUserModal = () => {
 
   const closeModal = () => {
     form.resetFields();
-    setModal(UserModals.CreateUser);
+    setModal(UserModals.CreateUser, false);
   };
 
   const onFinish = (values: any) =>

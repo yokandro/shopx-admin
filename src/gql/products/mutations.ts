@@ -11,4 +11,33 @@ const CreateProductMutation = gql`
   ${ProductFragment}
 `;
 
-export { CreateProductMutation };
+const ChangeProductStatusMutation = gql`
+  mutation changeProductStatus($input: ChangeProductStatusInput!) {
+    changeProductStatus(input: $input) {
+      ...Product
+    }
+  }
+  ${ProductFragment}
+`;
+
+const UpdateProductMutation = gql`
+  mutation updateProduct($input: UpdateProductInput!) {
+    updateProduct(input: $input) {
+      ...Product
+    }
+  }
+  ${ProductFragment}
+`;
+
+const DeleteProductMutation = gql`
+  mutation deleteProductById($productId: ObjectId!) {
+    deleteProductById(productId: $productId)
+  }
+`;
+
+export {
+  CreateProductMutation,
+  ChangeProductStatusMutation,
+  UpdateProductMutation,
+  DeleteProductMutation,
+};

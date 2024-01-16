@@ -11,6 +11,7 @@ import {
 } from "src/gql/generated.graphql";
 
 import { CATEGORY_TABLE_COLUMNS } from "./constants";
+import moment from "moment";
 
 const CategoriesTable = () => {
   const { searchTerm } = useContext(SearchContext);
@@ -42,7 +43,10 @@ const CategoriesTable = () => {
       key,
       dataIndex: key,
       sorter: (a, b, sortOrder) => handleSort(key, sortOrder),
-      render: (value: string) => value || "-",
+      render: (value: string) =>
+        key === "createdAt" || key === "updatedAt"
+          ? moment(value).format("DD/MM/YYYY")
+          : value || "-",
     })
   );
 

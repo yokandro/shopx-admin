@@ -4,19 +4,31 @@ import { useContext, useMemo } from "react";
 import { PRODUCT_MODALS } from "src/pages/Products/constants";
 import { ModalContext } from "src/common/contexts/ModalContext/ModalContext";
 import {
+  GetProductsDocument,
   useCreateProductMutation,
   useGetCategoriesQuery,
+  useUpdateProductMutation,
 } from "src/gql/generated.graphql";
 import { buildTree } from "src/common/helpers/tree/tree";
 
-const CreateProductModal = () => {
+const UpsertProductModal = () => {
   const [form] = Form.useForm();
-  const { isOpenedCurrent, setModal } = useContext(ModalContext);
-  const open = isOpenedCurrent[PRODUCT_MODALS.CreateProduct];
+  const { isOpenedCurrent, setModal, payload, setPayload } =
+    useContext(ModalContext);
+  const open = isOpenedCurrent[PRODUCT_MODALS.UpsertProduct];
+  const { product } = payload || {};
+  const isEdit = !!product;
 
   const [createProduct] = useCreateProductMutation({
     onError: (error) => message.error(error.message),
     onCompleted: () => message.success("Product has been created successfully"),
+    refetchQueries: [GetProductsDocument],
+  });
+
+  const [updateProduct] = useUpdateProductMutation({
+    onError: (error) => message.error(error.message),
+    onCompleted: () => message.success("Product has been updated successfully"),
+    refetchQueries: [GetProductsDocument],
   });
 
   const { data, loading } = useGetCategoriesQuery();
@@ -34,10 +46,20 @@ const CreateProductModal = () => {
   }, [data]);
 
   const closeModal = () => {
-    setModal(PRODUCT_MODALS.CreateProduct);
+    setPayload(undefined);
+    setModal(PRODUCT_MODALS.UpsertProduct, false);
+    form.resetFields();
   };
 
   const onFinish = ({ price, ...values }: any) => {
+    if (isEdit) {
+      return updateProduct({
+        variables: {
+          input: { ...values, price: +price, productId: product._id },
+        },
+        onCompleted: closeModal,
+      });
+    }
     createProduct({
       variables: { input: { ...values, price: +price } },
       onCompleted: closeModal,
@@ -46,12 +68,19 @@ const CreateProductModal = () => {
 
   return (
     <Modal
-      title="Create product"
+      title={isEdit ? "Edit product" : "Create product"}
       open={open}
+      destroyOnClose
       onCancel={closeModal}
+      okText={isEdit ? "Edit" : "Create"}
       onOk={form.submit}
     >
-      <Form form={form} onFinish={onFinish} layout="vertical">
+      <Form
+        form={form}
+        onFinish={onFinish}
+        layout="vertical"
+        initialValues={product}
+      >
         <Form.Item name="name" label="Name">
           <Input placeholder="Enter name" />
         </Form.Item>
@@ -73,4 +102,4 @@ const CreateProductModal = () => {
   );
 };
 
-export default CreateProductModal;
+export default UpsertProductModal;

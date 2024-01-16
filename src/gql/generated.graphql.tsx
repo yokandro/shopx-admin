@@ -68,6 +68,11 @@ export type Category = {
   updatedBy?: Maybe<Scalars['String']['output']>;
 };
 
+export type ChangeProductStatusInput = {
+  productId: Scalars['ObjectId']['input'];
+  status: Scalars['String']['input'];
+};
+
 export type CreateCategoryInput = {
   name: Scalars['String']['input'];
   parentCategoryId?: InputMaybe<Scalars['ObjectId']['input']>;
@@ -93,20 +98,30 @@ export type GetCategoryFilterInput = {
 
 export type GetProductsFilterInput = {
   searchTerm?: InputMaybe<Scalars['String']['input']>;
+  statuses?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type GetUsersFilterInput = {
+  roles?: InputMaybe<Array<Scalars['String']['input']>>;
   searchTerm?: InputMaybe<Scalars['String']['input']>;
   statuses?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changeProductStatus: Product;
   createCategory: Category;
   createProduct: Product;
   createUser: User;
+  deleteProductById: Scalars['Boolean']['output'];
   login: TokensModel;
   refreshTokens: TokensModel;
+  updateProduct: Product;
+};
+
+
+export type MutationChangeProductStatusArgs = {
+  input: ChangeProductStatusInput;
 };
 
 
@@ -125,9 +140,19 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteProductByIdArgs = {
+  productId: Scalars['ObjectId']['input'];
+};
+
+
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateProductArgs = {
+  input: UpdateProductInput;
 };
 
 export type PaginationInput = {
@@ -150,9 +175,16 @@ export type Product = {
   name: Scalars['String']['output'];
   price: Scalars['Float']['output'];
   rating?: Maybe<Scalars['Float']['output']>;
+  status: ProductStatuses;
   updatedAt: Scalars['DateTime']['output'];
   updatedBy?: Maybe<Scalars['String']['output']>;
 };
+
+export enum ProductStatuses {
+  Archived = 'ARCHIVED',
+  Draft = 'DRAFT',
+  Published = 'PUBLISHED'
+}
 
 export type ProductsOutput = {
   __typename?: 'ProductsOutput';
@@ -204,6 +236,14 @@ export type TokensModel = {
   accessToken: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
   refreshTokenExpiry?: Maybe<Scalars['String']['output']>;
+};
+
+export type UpdateProductInput = {
+  categoryId: Scalars['ObjectId']['input'];
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  productId: Scalars['ObjectId']['input'];
 };
 
 export type User = {
@@ -305,6 +345,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CategoriesPayload: ResolverTypeWrapper<CategoriesPayload>;
   Category: ResolverTypeWrapper<Category>;
+  ChangeProductStatusInput: ChangeProductStatusInput;
   CreateCategoryInput: CreateCategoryInput;
   CreateProductInput: CreateProductInput;
   CreateUserInput: CreateUserInput;
@@ -317,12 +358,14 @@ export type ResolversTypes = ResolversObject<{
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']['output']>;
   PaginationInput: PaginationInput;
   Product: ResolverTypeWrapper<Product>;
+  ProductStatuses: ProductStatuses;
   ProductsOutput: ResolverTypeWrapper<ProductsOutput>;
   Query: ResolverTypeWrapper<{}>;
   Roles: Roles;
   SortInput: SortInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TokensModel: ResolverTypeWrapper<TokensModel>;
+  UpdateProductInput: UpdateProductInput;
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
   User: ResolverTypeWrapper<User>;
   UsersOutput: ResolverTypeWrapper<UsersOutput>;
@@ -334,6 +377,7 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
   CategoriesPayload: CategoriesPayload;
   Category: Category;
+  ChangeProductStatusInput: ChangeProductStatusInput;
   CreateCategoryInput: CreateCategoryInput;
   CreateProductInput: CreateProductInput;
   CreateUserInput: CreateUserInput;
@@ -351,6 +395,7 @@ export type ResolversParentTypes = ResolversObject<{
   SortInput: SortInput;
   String: Scalars['String']['output'];
   TokensModel: TokensModel;
+  UpdateProductInput: UpdateProductInput;
   Upload: Scalars['Upload']['output'];
   User: User;
   UsersOutput: UsersOutput;
@@ -399,11 +444,14 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  changeProductStatus?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationChangeProductStatusArgs, 'input'>>;
   createCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
   createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  deleteProductById?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteProductByIdArgs, 'productId'>>;
   login?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   refreshTokens?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType>;
+  updateProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'input'>>;
 }>;
 
 export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ObjectId'], any> {
@@ -424,6 +472,7 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   rating?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['ProductStatuses'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   updatedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -520,14 +569,35 @@ export type GetCategoriesQueryVariables = Exact<{
 
 export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string }> } };
 
-export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string };
+export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses };
 
 export type CreateProductMutationVariables = Exact<{
   input: CreateProductInput;
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string } };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses } };
+
+export type ChangeProductStatusMutationVariables = Exact<{
+  input: ChangeProductStatusInput;
+}>;
+
+
+export type ChangeProductStatusMutation = { __typename?: 'Mutation', changeProductStatus: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses } };
+
+export type UpdateProductMutationVariables = Exact<{
+  input: UpdateProductInput;
+}>;
+
+
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses } };
+
+export type DeleteProductByIdMutationVariables = Exact<{
+  productId: Scalars['ObjectId']['input'];
+}>;
+
+
+export type DeleteProductByIdMutation = { __typename?: 'Mutation', deleteProductById: boolean };
 
 export type GetProductsQueryVariables = Exact<{
   filter?: InputMaybe<GetProductsFilterInput>;
@@ -536,7 +606,7 @@ export type GetProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string }> } };
+export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses }> } };
 
 export type UserFragmentFragment = { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } };
 
@@ -581,6 +651,7 @@ export const ProductFragmentDoc = gql`
   code
   categoryId
   categoryName
+  status
 }
     `;
 export const AccountFragmentDoc = gql`
@@ -749,6 +820,103 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const ChangeProductStatusDocument = gql`
+    mutation changeProductStatus($input: ChangeProductStatusInput!) {
+  changeProductStatus(input: $input) {
+    ...Product
+  }
+}
+    ${ProductFragmentDoc}`;
+export type ChangeProductStatusMutationFn = Apollo.MutationFunction<ChangeProductStatusMutation, ChangeProductStatusMutationVariables>;
+
+/**
+ * __useChangeProductStatusMutation__
+ *
+ * To run a mutation, you first call `useChangeProductStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeProductStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeProductStatusMutation, { data, loading, error }] = useChangeProductStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useChangeProductStatusMutation(baseOptions?: Apollo.MutationHookOptions<ChangeProductStatusMutation, ChangeProductStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeProductStatusMutation, ChangeProductStatusMutationVariables>(ChangeProductStatusDocument, options);
+      }
+export type ChangeProductStatusMutationHookResult = ReturnType<typeof useChangeProductStatusMutation>;
+export type ChangeProductStatusMutationResult = Apollo.MutationResult<ChangeProductStatusMutation>;
+export type ChangeProductStatusMutationOptions = Apollo.BaseMutationOptions<ChangeProductStatusMutation, ChangeProductStatusMutationVariables>;
+export const UpdateProductDocument = gql`
+    mutation updateProduct($input: UpdateProductInput!) {
+  updateProduct(input: $input) {
+    ...Product
+  }
+}
+    ${ProductFragmentDoc}`;
+export type UpdateProductMutationFn = Apollo.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, options);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
+export const DeleteProductByIdDocument = gql`
+    mutation deleteProductById($productId: ObjectId!) {
+  deleteProductById(productId: $productId)
+}
+    `;
+export type DeleteProductByIdMutationFn = Apollo.MutationFunction<DeleteProductByIdMutation, DeleteProductByIdMutationVariables>;
+
+/**
+ * __useDeleteProductByIdMutation__
+ *
+ * To run a mutation, you first call `useDeleteProductByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProductByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProductByIdMutation, { data, loading, error }] = useDeleteProductByIdMutation({
+ *   variables: {
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useDeleteProductByIdMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductByIdMutation, DeleteProductByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProductByIdMutation, DeleteProductByIdMutationVariables>(DeleteProductByIdDocument, options);
+      }
+export type DeleteProductByIdMutationHookResult = ReturnType<typeof useDeleteProductByIdMutation>;
+export type DeleteProductByIdMutationResult = Apollo.MutationResult<DeleteProductByIdMutation>;
+export type DeleteProductByIdMutationOptions = Apollo.BaseMutationOptions<DeleteProductByIdMutation, DeleteProductByIdMutationVariables>;
 export const GetProductsDocument = gql`
     query getProducts($filter: GetProductsFilterInput, $pagination: PaginationInput, $sort: SortInput) {
   getProducts(filter: $filter, pagination: $pagination, sort: $sort) {
