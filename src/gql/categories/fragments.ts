@@ -8,5 +8,6 @@ export const CategoryFragment = gql`
     createdAt
     updatedAt
     categoryName
+    description
   }
 `;

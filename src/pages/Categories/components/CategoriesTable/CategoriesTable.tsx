@@ -1,3 +1,4 @@
+import moment from "moment";
 import { Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { useContext, useMemo } from "react";
@@ -11,7 +12,7 @@ import {
 } from "src/gql/generated.graphql";
 
 import { CATEGORY_TABLE_COLUMNS } from "./constants";
-import moment from "moment";
+import { CategoryActions } from "./components/CategoryActions";
 
 const CategoriesTable = () => {
   const { searchTerm } = useContext(SearchContext);
@@ -37,18 +38,24 @@ const CategoriesTable = () => {
     [data]
   );
 
-  const columns: ColumnsType<Category> = CATEGORY_TABLE_COLUMNS.map(
-    ({ title, key }) => ({
+  const columns: ColumnsType<Category> = [
+    ...CATEGORY_TABLE_COLUMNS.map(({ title, key }) => ({
       title,
       key,
       dataIndex: key,
-      sorter: (a, b, sortOrder) => handleSort(key, sortOrder),
+      sorter: (a: Category, b: Category, sortOrder?: string | null) =>
+        handleSort(key, sortOrder),
       render: (value: string) =>
         key === "createdAt" || key === "updatedAt"
           ? moment(value).format("DD/MM/YYYY")
           : value || "-",
-    })
-  );
+    })),
+    {
+      title: "Actions",
+      key: "actions",
+      render: (category: Category) => <CategoryActions category={category} />,
+    },
+  ];
 
   return (
     <Table

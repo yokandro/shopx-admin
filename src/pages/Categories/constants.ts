@@ -1,3 +1,4 @@
 export enum CategoryModals {
-  CreateCategory = "CreateCategory",
+  UpsertCategory = "UpsertCategory",
+  DeleteCategory = "DeleteCategory",
 }

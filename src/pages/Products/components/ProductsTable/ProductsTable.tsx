@@ -51,10 +51,12 @@ const ProductsTable = () => {
     {
       title: "Description",
       dataIndex: "description",
+      render: (value: string) => value || "N/A",
     },
     {
       title: "Category",
       dataIndex: "categoryName",
+      render: (value: string) => value || "N/A",
     },
     {
       title: "Price",

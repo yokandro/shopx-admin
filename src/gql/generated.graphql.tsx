@@ -62,6 +62,7 @@ export type Category = {
   deleted: Scalars['Boolean']['output'];
   deletedAt?: Maybe<Scalars['DateTime']['output']>;
   deletedBy?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   parentCategoryId?: Maybe<Scalars['ObjectId']['output']>;
   updatedAt: Scalars['DateTime']['output'];
@@ -74,12 +75,13 @@ export type ChangeProductStatusInput = {
 };
 
 export type CreateCategoryInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   parentCategoryId?: InputMaybe<Scalars['ObjectId']['input']>;
 };
 
 export type CreateProductInput = {
-  categoryId: Scalars['ObjectId']['input'];
+  categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   price: Scalars['Float']['input'];
@@ -113,9 +115,11 @@ export type Mutation = {
   createCategory: Category;
   createProduct: Product;
   createUser: User;
+  deleteCategoryById: Scalars['Boolean']['output'];
   deleteProductById: Scalars['Boolean']['output'];
   login: TokensModel;
   refreshTokens: TokensModel;
+  updateCategory: Category;
   updateProduct: Product;
 };
 
@@ -140,6 +144,11 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteCategoryByIdArgs = {
+  categoryId: Scalars['ObjectId']['input'];
+};
+
+
 export type MutationDeleteProductByIdArgs = {
   productId: Scalars['ObjectId']['input'];
 };
@@ -148,6 +157,11 @@ export type MutationDeleteProductByIdArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateCategoryArgs = {
+  input: UpdateCategoryInput;
 };
 
 
@@ -163,7 +177,7 @@ export type PaginationInput = {
 export type Product = {
   __typename?: 'Product';
   _id: Scalars['String']['output'];
-  categoryId: Scalars['ObjectId']['output'];
+  categoryId?: Maybe<Scalars['ObjectId']['output']>;
   categoryName: Scalars['String']['output'];
   code: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
@@ -238,8 +252,15 @@ export type TokensModel = {
   refreshTokenExpiry?: Maybe<Scalars['String']['output']>;
 };
 
-export type UpdateProductInput = {
+export type UpdateCategoryInput = {
   categoryId: Scalars['ObjectId']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  parentCategoryId?: InputMaybe<Scalars['ObjectId']['input']>;
+};
+
+export type UpdateProductInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
   price: Scalars['Float']['input'];
@@ -365,6 +386,7 @@ export type ResolversTypes = ResolversObject<{
   SortInput: SortInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TokensModel: ResolverTypeWrapper<TokensModel>;
+  UpdateCategoryInput: UpdateCategoryInput;
   UpdateProductInput: UpdateProductInput;
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
   User: ResolverTypeWrapper<User>;
@@ -395,6 +417,7 @@ export type ResolversParentTypes = ResolversObject<{
   SortInput: SortInput;
   String: Scalars['String']['output'];
   TokensModel: TokensModel;
+  UpdateCategoryInput: UpdateCategoryInput;
   UpdateProductInput: UpdateProductInput;
   Upload: Scalars['Upload']['output'];
   User: User;
@@ -432,6 +455,7 @@ export type CategoryResolvers<ContextType = any, ParentType extends ResolversPar
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   deletedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   deletedBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   parentCategoryId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -448,9 +472,11 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
   createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  deleteCategoryById?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteCategoryByIdArgs, 'categoryId'>>;
   deleteProductById?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteProductByIdArgs, 'productId'>>;
   login?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   refreshTokens?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType>;
+  updateCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'input'>>;
   updateProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'input'>>;
 }>;
 
@@ -460,7 +486,7 @@ export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  categoryId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  categoryId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   categoryName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   code?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -551,14 +577,28 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'TokensModel', accessToken: string, refreshToken: string, refreshTokenExpiry?: string | null } };
 
-export type CategoryFragment = { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string };
+export type CategoryFragment = { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string } };
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null } };
+
+export type UpdateCategoryMutationVariables = Exact<{
+  input: UpdateCategoryInput;
+}>;
+
+
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null } };
+
+export type DeleteCategoryByIdMutationVariables = Exact<{
+  categoryId: Scalars['ObjectId']['input'];
+}>;
+
+
+export type DeleteCategoryByIdMutation = { __typename?: 'Mutation', deleteCategoryById: boolean };
 
 export type GetCategoriesQueryVariables = Exact<{
   sort?: InputMaybe<SortInput>;
@@ -567,30 +607,30 @@ export type GetCategoriesQueryVariables = Exact<{
 }>;
 
 
-export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string }> } };
+export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null }> } };
 
-export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses };
+export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses };
 
 export type CreateProductMutationVariables = Exact<{
   input: CreateProductInput;
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses } };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses } };
 
 export type ChangeProductStatusMutationVariables = Exact<{
   input: ChangeProductStatusInput;
 }>;
 
 
-export type ChangeProductStatusMutation = { __typename?: 'Mutation', changeProductStatus: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses } };
+export type ChangeProductStatusMutation = { __typename?: 'Mutation', changeProductStatus: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses } };
 
 export type UpdateProductMutationVariables = Exact<{
   input: UpdateProductInput;
 }>;
 
 
-export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses } };
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses } };
 
 export type DeleteProductByIdMutationVariables = Exact<{
   productId: Scalars['ObjectId']['input'];
@@ -606,7 +646,7 @@ export type GetProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId: any, categoryName: string, status: ProductStatuses }> } };
+export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses }> } };
 
 export type UserFragmentFragment = { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } };
 
@@ -639,6 +679,7 @@ export const CategoryFragmentDoc = gql`
   createdAt
   updatedAt
   categoryName
+  description
 }
     `;
 export const ProductFragmentDoc = gql`
@@ -742,6 +783,70 @@ export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const UpdateCategoryDocument = gql`
+    mutation updateCategory($input: UpdateCategoryInput!) {
+  updateCategory(input: $input) {
+    ...Category
+  }
+}
+    ${CategoryFragmentDoc}`;
+export type UpdateCategoryMutationFn = Apollo.MutationFunction<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+
+/**
+ * __useUpdateCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCategoryMutation, { data, loading, error }] = useUpdateCategoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(UpdateCategoryDocument, options);
+      }
+export type UpdateCategoryMutationHookResult = ReturnType<typeof useUpdateCategoryMutation>;
+export type UpdateCategoryMutationResult = Apollo.MutationResult<UpdateCategoryMutation>;
+export type UpdateCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+export const DeleteCategoryByIdDocument = gql`
+    mutation deleteCategoryById($categoryId: ObjectId!) {
+  deleteCategoryById(categoryId: $categoryId)
+}
+    `;
+export type DeleteCategoryByIdMutationFn = Apollo.MutationFunction<DeleteCategoryByIdMutation, DeleteCategoryByIdMutationVariables>;
+
+/**
+ * __useDeleteCategoryByIdMutation__
+ *
+ * To run a mutation, you first call `useDeleteCategoryByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCategoryByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCategoryByIdMutation, { data, loading, error }] = useDeleteCategoryByIdMutation({
+ *   variables: {
+ *      categoryId: // value for 'categoryId'
+ *   },
+ * });
+ */
+export function useDeleteCategoryByIdMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCategoryByIdMutation, DeleteCategoryByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCategoryByIdMutation, DeleteCategoryByIdMutationVariables>(DeleteCategoryByIdDocument, options);
+      }
+export type DeleteCategoryByIdMutationHookResult = ReturnType<typeof useDeleteCategoryByIdMutation>;
+export type DeleteCategoryByIdMutationResult = Apollo.MutationResult<DeleteCategoryByIdMutation>;
+export type DeleteCategoryByIdMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryByIdMutation, DeleteCategoryByIdMutationVariables>;
 export const GetCategoriesDocument = gql`
     query getCategories($sort: SortInput, $pagination: PaginationInput, $filter: GetCategoryFilterInput) {
   getCategories(sort: $sort, pagination: $pagination, filter: $filter) {

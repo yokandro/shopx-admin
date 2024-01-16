@@ -4,6 +4,10 @@ export const CATEGORY_TABLE_COLUMNS: { title: string; key: string }[] = [
     key: "name",
   },
   {
+    title: "Description",
+    key: "description",
+  },
+  {
     title: "Parent category",
     key: "categoryName",
   },

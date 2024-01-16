@@ -10,9 +10,10 @@ import {
   SearchProvider,
 } from "src/common/contexts/SearchContext/SearchContext";
 
-import { CreateCategoryModal } from "./components/CreateCategoryModal";
 import { CategoryModals } from "./constants";
+import { UpsertCategoryModal } from "./components/UpsertCategoryModal";
 import { CategoriesTable } from "./components/CategoriesTable";
+import { DeleteCategoryModal } from "./components/DeleteCategoryModal";
 
 const Categories = () => {
   const { setModal } = useContext(ModalContext);
@@ -20,7 +21,8 @@ const Categories = () => {
 
   return (
     <div>
-      <CreateCategoryModal />
+      <UpsertCategoryModal />
+      <DeleteCategoryModal />
       <div className="flex items-center justify-between mb-4">
         <Typography.Title level={4}>Categories</Typography.Title>
         <div className="flex">
@@ -30,7 +32,7 @@ const Categories = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <Button
-            onClick={() => setModal(CategoryModals.CreateCategory, true)}
+            onClick={() => setModal(CategoryModals.UpsertCategory, true)}
             type="primary"
           >
             Create category
