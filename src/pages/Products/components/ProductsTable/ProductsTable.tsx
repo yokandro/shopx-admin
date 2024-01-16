@@ -6,6 +6,7 @@ import { useContext, useMemo } from "react";
 import { SearchContext } from "src/common/contexts/SearchContext/SearchContext";
 import { useTablePagination } from "src/common/hooks/useTablePagination/useTablePagination";
 import { useTableSort } from "src/common/hooks/useTableSort/useTableSort";
+import { FilterContext } from "src/common/contexts/FilterContext/FilterContext";
 import {
   Product,
   ProductStatuses,
@@ -19,11 +20,20 @@ const ProductsTable = () => {
   const { searchTerm } = useContext(SearchContext);
   const { sort, handleSort } = useTableSort();
   const { setPage, pagination } = useTablePagination();
+  const { filter } = useContext(FilterContext);
 
   const { data, loading } = useGetProductsQuery({
     variables: {
       filter: {
         searchTerm,
+        categoryIds:
+          filter.categoryIds && filter.categoryIds.length > 0
+            ? filter.categoryIds
+            : undefined,
+        statuses:
+          filter.statuses && filter.statuses.length > 0
+            ? filter.statuses
+            : undefined,
       },
       sort,
       pagination,

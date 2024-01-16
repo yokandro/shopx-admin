@@ -14,6 +14,8 @@ import { PRODUCT_MODALS } from "./constants";
 import { UpsertProductModal } from "./components/UpsertProductModal";
 import { ProductsTable } from "./components/ProductsTable";
 import { DeleteProductModal } from "./components/DeleteProductModal";
+import { ProductsFilter } from "./components/ProductsFilter";
+import { FilterProvider } from "src/common/contexts/FilterContext/FilterContext";
 
 const Products = () => {
   const { setModal } = useContext(ModalContext);
@@ -28,9 +30,10 @@ const Products = () => {
         <div className="flex items-center">
           <Input.Search
             placeholder="Find product"
-            className="mr-2 min-w-[300px]"
+            className="min-w-[300px]"
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <ProductsFilter className="mx-2" />
           <Button
             type="primary"
             onClick={() => setModal(PRODUCT_MODALS.UpsertProduct, true)}
@@ -47,7 +50,9 @@ const Products = () => {
 const ProductsPage = () => (
   <ModalProvider>
     <SearchProvider>
-      <Products />
+      <FilterProvider>
+        <Products />
+      </FilterProvider>
     </SearchProvider>
   </ModalProvider>
 );

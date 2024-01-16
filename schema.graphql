@@ -33,7 +33,7 @@ type CategoriesPayload {
 
 type Category {
   _id: String!
-  categoryName: String!
+  categoryName: String
   createdAt: DateTime!
   createdBy: String
   deleted: Boolean!
@@ -81,6 +81,7 @@ input GetCategoryFilterInput {
 }
 
 input GetProductsFilterInput {
+  categoryIds: [ObjectId!]
   searchTerm: String
   statuses: [String!]
 }
@@ -115,7 +116,7 @@ input PaginationInput {
 type Product {
   _id: String!
   categoryId: ObjectId
-  categoryName: String!
+  categoryName: String
   code: Float!
   createdAt: DateTime!
   createdBy: String

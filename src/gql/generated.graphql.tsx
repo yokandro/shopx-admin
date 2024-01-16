@@ -56,7 +56,7 @@ export type CategoriesPayload = {
 export type Category = {
   __typename?: 'Category';
   _id: Scalars['String']['output'];
-  categoryName: Scalars['String']['output'];
+  categoryName?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   createdBy?: Maybe<Scalars['String']['output']>;
   deleted: Scalars['Boolean']['output'];
@@ -99,6 +99,7 @@ export type GetCategoryFilterInput = {
 };
 
 export type GetProductsFilterInput = {
+  categoryIds?: InputMaybe<Array<Scalars['ObjectId']['input']>>;
   searchTerm?: InputMaybe<Scalars['String']['input']>;
   statuses?: InputMaybe<Array<Scalars['String']['input']>>;
 };
@@ -178,7 +179,7 @@ export type Product = {
   __typename?: 'Product';
   _id: Scalars['String']['output'];
   categoryId?: Maybe<Scalars['ObjectId']['output']>;
-  categoryName: Scalars['String']['output'];
+  categoryName?: Maybe<Scalars['String']['output']>;
   code: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
   createdBy?: Maybe<Scalars['String']['output']>;
@@ -449,7 +450,7 @@ export type CategoriesPayloadResolvers<ContextType = any, ParentType extends Res
 
 export type CategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = ResolversObject<{
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  categoryName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  categoryName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -487,7 +488,7 @@ export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
   _id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   categoryId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
-  categoryName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  categoryName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   code?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdBy?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -577,21 +578,21 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'TokensModel', accessToken: string, refreshToken: string, refreshTokenExpiry?: string | null } };
 
-export type CategoryFragment = { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null };
+export type CategoryFragment = { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName?: string | null, description?: string | null };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null } };
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName?: string | null, description?: string | null } };
 
 export type UpdateCategoryMutationVariables = Exact<{
   input: UpdateCategoryInput;
 }>;
 
 
-export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null } };
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName?: string | null, description?: string | null } };
 
 export type DeleteCategoryByIdMutationVariables = Exact<{
   categoryId: Scalars['ObjectId']['input'];
@@ -607,30 +608,30 @@ export type GetCategoriesQueryVariables = Exact<{
 }>;
 
 
-export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName: string, description?: string | null }> } };
+export type GetCategoriesQuery = { __typename?: 'Query', getCategories: { __typename?: 'CategoriesPayload', totalCount: number, collection: Array<{ __typename?: 'Category', _id: string, name: string, parentCategoryId?: any | null, createdAt: any, updatedAt: any, categoryName?: string | null, description?: string | null }> } };
 
-export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses };
+export type ProductFragment = { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName?: string | null, status: ProductStatuses };
 
 export type CreateProductMutationVariables = Exact<{
   input: CreateProductInput;
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses } };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName?: string | null, status: ProductStatuses } };
 
 export type ChangeProductStatusMutationVariables = Exact<{
   input: ChangeProductStatusInput;
 }>;
 
 
-export type ChangeProductStatusMutation = { __typename?: 'Mutation', changeProductStatus: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses } };
+export type ChangeProductStatusMutation = { __typename?: 'Mutation', changeProductStatus: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName?: string | null, status: ProductStatuses } };
 
 export type UpdateProductMutationVariables = Exact<{
   input: UpdateProductInput;
 }>;
 
 
-export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses } };
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct: { __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName?: string | null, status: ProductStatuses } };
 
 export type DeleteProductByIdMutationVariables = Exact<{
   productId: Scalars['ObjectId']['input'];
@@ -646,7 +647,7 @@ export type GetProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName: string, status: ProductStatuses }> } };
+export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName?: string | null, status: ProductStatuses }> } };
 
 export type UserFragmentFragment = { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } };
 
