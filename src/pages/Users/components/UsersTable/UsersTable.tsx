@@ -15,6 +15,7 @@ import {
 } from "src/gql/generated.graphql";
 
 import { statusesColorsMap } from "./constants";
+import { UserActions } from "./components/UserActions";
 
 const UsersTable = () => {
   const { searchTerm } = useContext(SearchContext);
@@ -79,6 +80,11 @@ const UsersTable = () => {
       title: "Creation date",
       sorter: (a, b, order) => handleSort("createdAt", order),
       render: (date: string) => moment(date).format("DD/MM/YYYY"),
+    },
+    {
+      key: "actions",
+      title: "Actions",
+      render: (user: User) => <UserActions user={user} />,
     },
   ];
 

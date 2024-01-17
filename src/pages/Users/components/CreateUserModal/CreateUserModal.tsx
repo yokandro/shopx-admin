@@ -3,7 +3,11 @@ import { capitalize } from "lodash";
 import { useContext } from "react";
 
 import { ModalContext } from "src/common/contexts/ModalContext/ModalContext";
-import { Roles, useCreateUserMutation } from "src/gql/generated.graphql";
+import {
+  GetUsersDocument,
+  Roles,
+  useCreateUserMutation,
+} from "src/gql/generated.graphql";
 import { UserModals } from "src/pages/Users/constants";
 
 const CreateUserModal = () => {
@@ -15,6 +19,7 @@ const CreateUserModal = () => {
       message.success("Invitation email has been sent");
     },
     onError: (error) => message.error(error.message),
+    refetchQueries: [GetUsersDocument],
   });
 
   const closeModal = () => {

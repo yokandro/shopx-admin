@@ -118,8 +118,10 @@ export type Mutation = {
   createUser: User;
   deleteCategoryById: Scalars['Boolean']['output'];
   deleteProductById: Scalars['Boolean']['output'];
+  deleteUser: Scalars['Boolean']['output'];
   login: TokensModel;
   refreshTokens: TokensModel;
+  resendUserInvitationEmail: User;
   updateCategory: Category;
   updateProduct: Product;
 };
@@ -155,9 +157,19 @@ export type MutationDeleteProductByIdArgs = {
 };
 
 
+export type MutationDeleteUserArgs = {
+  userId: Scalars['ObjectId']['input'];
+};
+
+
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+
+export type MutationResendUserInvitationEmailArgs = {
+  userId: Scalars['ObjectId']['input'];
 };
 
 
@@ -475,8 +487,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deleteCategoryById?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteCategoryByIdArgs, 'categoryId'>>;
   deleteProductById?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteProductByIdArgs, 'productId'>>;
+  deleteUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'userId'>>;
   login?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   refreshTokens?: Resolver<ResolversTypes['TokensModel'], ParentType, ContextType>;
+  resendUserInvitationEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationResendUserInvitationEmailArgs, 'userId'>>;
   updateCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'input'>>;
   updateProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'input'>>;
 }>;
@@ -657,6 +671,20 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
+
+export type ResendUserInvitationEmailMutationVariables = Exact<{
+  userId: Scalars['ObjectId']['input'];
+}>;
+
+
+export type ResendUserInvitationEmailMutation = { __typename?: 'Mutation', resendUserInvitationEmail: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
+
+export type DeleteUserMutationVariables = Exact<{
+  userId: Scalars['ObjectId']['input'];
+}>;
+
+
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: boolean };
 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1101,6 +1129,70 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const ResendUserInvitationEmailDocument = gql`
+    mutation resendUserInvitationEmail($userId: ObjectId!) {
+  resendUserInvitationEmail(userId: $userId) {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export type ResendUserInvitationEmailMutationFn = Apollo.MutationFunction<ResendUserInvitationEmailMutation, ResendUserInvitationEmailMutationVariables>;
+
+/**
+ * __useResendUserInvitationEmailMutation__
+ *
+ * To run a mutation, you first call `useResendUserInvitationEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendUserInvitationEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendUserInvitationEmailMutation, { data, loading, error }] = useResendUserInvitationEmailMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useResendUserInvitationEmailMutation(baseOptions?: Apollo.MutationHookOptions<ResendUserInvitationEmailMutation, ResendUserInvitationEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendUserInvitationEmailMutation, ResendUserInvitationEmailMutationVariables>(ResendUserInvitationEmailDocument, options);
+      }
+export type ResendUserInvitationEmailMutationHookResult = ReturnType<typeof useResendUserInvitationEmailMutation>;
+export type ResendUserInvitationEmailMutationResult = Apollo.MutationResult<ResendUserInvitationEmailMutation>;
+export type ResendUserInvitationEmailMutationOptions = Apollo.BaseMutationOptions<ResendUserInvitationEmailMutation, ResendUserInvitationEmailMutationVariables>;
+export const DeleteUserDocument = gql`
+    mutation deleteUser($userId: ObjectId!) {
+  deleteUser(userId: $userId)
+}
+    `;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, options);
+      }
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const GetCurrentUserDocument = gql`
     query getCurrentUser {
   getCurrentUser {

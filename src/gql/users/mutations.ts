@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 import { UserFragment } from "./fragments";
 
-export const CreateUserMutation = gql`
+const CreateUserMutation = gql`
   mutation createUser($input: CreateUserInput!) {
     createUser(input: $input) {
       ...UserFragment
@@ -10,3 +10,24 @@ export const CreateUserMutation = gql`
   }
   ${UserFragment}
 `;
+
+const ResendUserInvitationEmailMutation = gql`
+  mutation resendUserInvitationEmail($userId: ObjectId!) {
+    resendUserInvitationEmail(userId: $userId) {
+      ...UserFragment
+    }
+  }
+  ${UserFragment}
+`;
+
+const DeleteUserMutation = gql`
+  mutation deleteUser($userId: ObjectId!) {
+    deleteUser(userId: $userId)
+  }
+`;
+
+export {
+  CreateUserMutation,
+  ResendUserInvitationEmailMutation,
+  DeleteUserMutation,
+};
