@@ -663,21 +663,21 @@ export type GetProductsQueryVariables = Exact<{
 
 export type GetProductsQuery = { __typename?: 'Query', getProducts: { __typename?: 'ProductsOutput', totalCount: number, collection: Array<{ __typename?: 'Product', _id: string, name: string, description?: string | null, createdAt: any, price: number, code: number, categoryId?: any | null, categoryName?: string | null, status: ProductStatuses }> } };
 
-export type UserFragmentFragment = { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } };
+export type UserFragmentFragment = { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, accountId: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, accountId: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
 
 export type ResendUserInvitationEmailMutationVariables = Exact<{
   userId: Scalars['ObjectId']['input'];
 }>;
 
 
-export type ResendUserInvitationEmailMutation = { __typename?: 'Mutation', resendUserInvitationEmail: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
+export type ResendUserInvitationEmailMutation = { __typename?: 'Mutation', resendUserInvitationEmail: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, accountId: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
 
 export type DeleteUserMutationVariables = Exact<{
   userId: Scalars['ObjectId']['input'];
@@ -689,7 +689,7 @@ export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: boolean 
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, accountId: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } } };
 
 export type GetUsersQueryVariables = Exact<{
   filter?: InputMaybe<GetUsersFilterInput>;
@@ -698,7 +698,7 @@ export type GetUsersQueryVariables = Exact<{
 }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: { __typename?: 'UsersOutput', totalCount: number, collection: Array<{ __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } }> } };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: { __typename?: 'UsersOutput', totalCount: number, collection: Array<{ __typename?: 'User', _id: string, firstName: string, lastName: string, createdAt: any, accountId: any, account: { __typename?: 'Account', _id: string, email: string, role: Roles, status: AccountStatuses } }> } };
 
 export const CategoryFragmentDoc = gql`
     fragment Category on Category {
@@ -738,6 +738,7 @@ export const UserFragmentFragmentDoc = gql`
   firstName
   lastName
   createdAt
+  accountId
   account {
     ...Account
   }

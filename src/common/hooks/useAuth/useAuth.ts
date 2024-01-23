@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import { RoutesMap } from "src/app/routes-map";
 import { localStorageOperations } from "src/common/helpers/local-storage";
-import { useLoginMutation } from "src/gql/generated.graphql";
+import {
+  GetCurrentUserDocument,
+  useLoginMutation,
+} from "src/gql/generated.graphql";
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -18,6 +21,7 @@ export const useAuth = () => {
       navigate(RoutesMap.Products);
     },
     onError: (error) => message.error(error.message),
+    refetchQueries: [GetCurrentUserDocument],
   });
 
   const login = (values: { email: string; password: string }) =>

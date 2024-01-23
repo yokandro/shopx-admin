@@ -16,8 +16,13 @@ export const useInitViewer = () => {
         setUser(null);
         return logout();
       }
+      if (error.message === "ACCOUNT_NOT_FOUND") {
+        message.error("Such account does not exist.");
+        return logout();
+      }
       message.error(error.message);
     },
+    fetchPolicy: "network-only",
   });
 
   const user = useMemo(() => data?.getCurrentUser as User, [data]);

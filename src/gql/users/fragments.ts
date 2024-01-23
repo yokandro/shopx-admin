@@ -8,6 +8,7 @@ export const UserFragment = gql`
     firstName
     lastName
     createdAt
+    accountId
     account {
       ...Account
     }

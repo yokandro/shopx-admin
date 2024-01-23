@@ -9,11 +9,13 @@ import {
 } from "src/gql/generated.graphql";
 import { ModalContext } from "src/common/contexts/ModalContext/ModalContext";
 import { UserModals } from "src/pages/Users/constants";
+import { ViewerContext } from "src/common/contexts/ViewerContext/ViewerContext";
 
 import type { UserActionsProps } from "./types";
 
 const UserActions: FC<UserActionsProps> = ({ user }) => {
   const { setModal, setPayload } = useContext(ModalContext);
+  const { user: currentUser } = useContext(ViewerContext);
 
   const [resendEmail] = useResendUserInvitationEmailMutation({
     onCompleted: () => message.success("Invitation email has been sent"),
@@ -33,7 +35,9 @@ const UserActions: FC<UserActionsProps> = ({ user }) => {
           onClick={() => resendEmail({ variables: { userId: user._id } })}
         />
       )}
-      <DeleteOutlined className="text-red-500" onClick={onDelete} />
+      {user.accountId !== currentUser?.accountId && (
+        <DeleteOutlined className="text-red-500" onClick={onDelete} />
+      )}
     </div>
   );
 };
